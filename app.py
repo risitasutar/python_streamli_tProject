@@ -128,7 +128,8 @@ def load_investor_details(investor):
 
     st.pyplot(fig2)
 
-st.sidebar.title('Startup Funding Analysis')
+st.sidebar.title('STARTUP LENS')
+st,sidebar.subtitle('Startup Funding Analysis')
 
 option = st.sidebar.selectbox('Select One',['Overall Analysis','StartUp','Investor'])
 
