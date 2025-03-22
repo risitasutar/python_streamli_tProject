@@ -47,6 +47,47 @@ def load_overall_analysis():
     ax3.plot(temp_df['x_axis'], temp_df['amount'])
 
     st.pyplot(fig3)
+def load_startup_details(startup_name):
+    st.title(startup_name + ' Analysis')
+
+    # Filter data for the selected startup
+    startup_df = df[df['startup'] == startup_name]
+
+    if startup_df.empty:
+        st.write("No data available for this startup.")
+        return
+
+    # Extracting details
+    vertical = startup_df['vertical'].iloc[0]
+    subvertical = startup_df['subvertical'].iloc[0]
+    city = startup_df['city'].iloc[0]
+    total_funding = startup_df['amount'].sum()
+    funding_rounds = startup_df.shape[0]
+
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.metric('Vertical', vertical)
+    with col2:
+        st.metric('Sub-Vertical', subvertical)
+    with col3:
+        st.metric('City', city)
+
+    col4, col5 = st.columns(2)
+    with col4:
+        st.metric('Total Funding', f'{total_funding} Cr')
+    with col5:
+        st.metric('Funding Rounds', funding_rounds)
+
+    st.subheader('Funding Timeline')
+
+    # Plot funding over time
+    fig, ax = plt.subplots()
+    ax.plot(startup_df['date'], startup_df['amount'], marker='o', linestyle='-')
+    ax.set_xlabel('Date')
+    ax.set_ylabel('Funding Amount (Cr)')
+    ax.set_title(f'Funding Trend of {startup_name}')
+
+    st.pyplot(fig)
 
 
 
@@ -95,9 +136,11 @@ if option == 'Overall Analysis':
     load_overall_analysis()
 
 elif option == 'StartUp':
-    st.sidebar.selectbox('Select StartUp',sorted(df['startup'].unique().tolist()))
+    selected_startup= st.sidebar.selectbox('Select StartUp',sorted(df['startup'].unique().tolist()))
     btn1 = st.sidebar.button('Find StartUp Details')
     st.title('StartUp Analysis')
+    if btn1:
+        load_startup_details(selected_startup)
 else:
     selected_investor = st.sidebar.selectbox('Select StartUp',sorted(set(df['investors'].str.split(',').sum())))
     btn2 = st.sidebar.button('Find Investor Details')
